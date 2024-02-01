@@ -13,9 +13,9 @@ build:
 	chmod +x $(SCRIPTS)
 	mkdir -p $(AWS_PATH)
 	touch $(addprefix $(AWS_PATH), $(CREDENTIALS_NAME))
-	$(FILES_PATH)$(AWS_SCRIPT) $1
-	$(FILES_PATH)$(SET_SERVICES_SCRIPT) $(GCP_SCRIPT)
-	terraform init -chdir=$(TERRAFORM_PATH)
-	terraform plan -chdir=$(TERRAFORM_PATH)
-	terraform apply -chdir=$(TERRAFORM_PATH) -auto-approve
+	$(FILES_PATH)$(AWS_SCRIPT) $(KEY_SECRET)
+	$(FILES_PATH)$(SET_SERVICES_SCRIPT) $(addprefix $(FILES_PATH), $(GCP_SCRIPT))
+	terraform -chdir=$(TERRAFORM_PATH) init
+	terraform -chdir=$(TERRAFORM_PATH) plan
+	terraform -chdir=$(TERRAFORM_PATH) apply -auto-approve
 

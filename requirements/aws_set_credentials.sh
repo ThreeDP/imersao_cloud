@@ -140,7 +140,7 @@ fi
 ACCESS_KEYS_FILE=$1
 
 if [ "$#" -eq 2 ]; then
-  ACCESS_KEYS_FILE=./key.csv
+  ACCESS_KEYS_FILE=../key.csv
   createAccessKeys $1 $2 ${ACCESS_KEYS_FILE}
 fi
 
