@@ -26,10 +26,10 @@ deploy:
 	gcloud sql connect $(SQL_INSTANCE) --user=root
 
 fclean:
-	rm -rf $(TERRAFORM_OUT_FILES)
-	terraform -chdir=$(TERRAFORM_PATH) destroy
 	kubectl delete deployment luxxy-covid-testing-system
 	kubectl delete service luxxy-covid-testing-system
+	terraform -chdir=$(TERRAFORM_PATH) destroy
+	rm -rf $(TERRAFORM_OUT_FILES)
 	gcloud sql instances delete $(SQL_INSTANCE)
-	$(FILES_PATH)$(UNSET_SERVICES_SCRIPT)
-	rm -rf ~/.aws
+#	$(FILES_PATH)$(UNSET_SERVICES_SCRIPT)
+#	rm -rf ~/.aws

@@ -30,7 +30,6 @@ DB_PORT="3306"
 ## Crie a tabela para os dados
 
 ```sh
-export CONTAINER_LUXXY_COVID_NAME=gcr.io/$GOOGLE_CLOUD_PROJECT_ID/luxxy-covid-testing-system-app-pt
 mysql --host="<ip_publico_mysql>" --port="3306" -u <sql_user> -p
 # Digite a senha
 use dbcovidtesting;
@@ -42,8 +41,9 @@ exit;
 ## Crie a imagem do app
 
 ```sh
-GOOGLE_CLOUD_PROJECT_ID=$(gcloud config get-value project)
-cd cd ~/imersao_cloud/requirements/app
+export GOOGLE_CLOUD_PROJECT_ID=$(gcloud config get-value project)
+export CONTAINER_LUXXY_COVID_NAME=gcr.io/$GOOGLE_CLOUD_PROJECT_ID/luxxy-covid-testing-system-app-pt
+cd ~/imersao_cloud/requirements/app
 gcloud builds submit --tag $CONTAINER_LUXXY_COVID_NAME
 ```
 
