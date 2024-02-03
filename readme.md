@@ -16,7 +16,7 @@ git clone git@github.com:ThreeDP/imersao_cloud.git
 
 3. Execute o arquivo .environment para obter as informações basicas do ambiente.
 
-```
+```sh
 source .enviroment
 ```
 
@@ -61,4 +61,25 @@ exit;
 
 ```sh
 make deploy
+```
+
+# upload do dump do banco de dados
+> Faça o upload do banco de dados e faça a migre os dados para o banco no google cloud.
+
+```sh
+gcloud sql connect $SQL_INSTANCE --user=<user>
+```
+
+```sh
+use dbcovidtesting;
+source ~/imersao_cloud/requirements/db/db_dump.sql;
+select * from records;
+exit;
+```
+
+## upload dos pdfs para o bucket s3 aws
+> Abra a CLI no aws e use o comando wget pra fazer o download dos pdf para o cli local
+
+```
+aws s3 sync . s3://luxxy-covid-testing-system-pdf-pt-xxxx
 ```

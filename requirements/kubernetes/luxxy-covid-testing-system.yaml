@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: luxxy-covid-testing-system
-        image: gcr.io/imersao-cloud-413121/luxxy-covid-testing-system-app-pt
+        image: gcr.io/imersao-cloud-413121/luxxy-covid-testing-system-app-pt:latest
         ports:
         - containerPort: 8000
         resources:
@@ -53,3 +53,17 @@ spec:
     targetPort: 8000
   selector:
     app: luxxy-covid-testing-system
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+spec:
+  containers:
+  - name: test-container
+    image: busybox
+    command: ["/bin/sh", "-c", "env"]
+    envFrom:
+      - configMapRef:
+          name: luxxy-covid-config
