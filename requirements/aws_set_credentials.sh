@@ -114,7 +114,7 @@ function addTFVar() {
 function createCredentials () {
   # ~ only expands when NOT quoted (below).
   local CREDS_FILE_DIR=~/.aws
-  local CREDS_FILE_PATH="${CREDS_FILE_DIR}/credentials"
+  local CREDS_FILE_PATH="${CREDS_FILE_DIR}/${CREDENTIALS_NAME}"
   local THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
   local TFVARS_DIR_PATH="${THIS_DIR}/terraform"
   local TFVARS_FILE_PATH="${TFVARS_DIR_PATH}/terraform.tfvars"

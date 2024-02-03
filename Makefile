@@ -1,14 +1,16 @@
 FILES_PATH				=	./requirements/
+AWS_PATH				=	~/.aws/
+TERRAFORM_PATH			=	$(addprefix $(FILES_PATH), terraform/)
+KUBERNETES_PATH			=	$(addprefix $(FILES_PATH), kubernetes/)
+APP_PATH				=	$(addprefix $(FILES_PATH), app/)
+
 GCP_SCRIPT				=	gcp_set_project.sh
 AWS_SCRIPT				=	aws_set_credentials.sh
 SET_SERVICES_SCRIPT		=	set_services.sh
-UNSET_SERVICES_SCRIPT	=	unset_services.sh
 SCRIPTS					=	$(addprefix $(FILES_PATH), $(AWS_SCRIPT) $(GCP_SCRIPT) $(SET_SERVICES_SCRIPT))
-CREDENTIALS_NAME		=	credentials
-AWS_PATH				=	~/.aws/
-TERRAFORM_PATH			=	$(addprefix $(FILES_PATH), terraform)
-TERRAFROM_OUT_FILES		=	$(addprefix $(TERRAFORM_PATH), .terraform .terraform.lock.hcl terraform.tfstate terraform.tfvars)
-SQL_INSTANCE			=	luxxy-covid-testing-system-database-instance-pt	
+
+TERRAFORM_OUT_FILES		=	$(addprefix $(TERRAFORM_PATH), .terraform .terraform.lock.hcl terraform.tfstate terraform.tfvars terraform.tfstate.backup)
+KUBERNETES_FILE			=	luxxy-covid-testing-system.yaml
 
 all: build
 
@@ -23,13 +25,19 @@ build:
 	terraform -chdir=$(TERRAFORM_PATH) apply -auto-approve
 
 deploy:
-	gcloud sql connect $(SQL_INSTANCE) --user=root
+	gcloud services enable cloudbuild.googleapis.com
+	cd $(APP_PATH) && gcloud builds submit --tag $(CONTAINER_LUXXY_COVID_NAME)
+	gcloud container clusters get-credentials $(KUBERNETES_INSTANCE) --region us-east4 --project $(GOOGLE_CLOUD_PROJECT_ID)
+	kubectl create configmap $(KUBERNETES_ENV_FILE) --from-env-file=.env
+	cd $(KUBERNETES_PATH) && kubectl apply -f $(KUBERNETES_FILE)
+
+clean:
+	rm -rf $(TERRAFORM_OUT_FILES)
+	rm -rf ~/.aws
 
 fclean:
+	gcloud container clusters get-credentials $(KUBERNETES_INSTANCE) --region us-east4 --project $(GOOGLE_CLOUD_PROJECT_ID)
 	kubectl delete deployment luxxy-covid-testing-system
 	kubectl delete service luxxy-covid-testing-system
+	gcloud compute networks peerings delete servicenetworking-googleapis-com --network=$(VPC_NETWORK) --project=$(GOOGLE_CLOUD_PROJECT_ID)
 	terraform -chdir=$(TERRAFORM_PATH) destroy
-	rm -rf $(TERRAFORM_OUT_FILES)
-	gcloud sql instances delete $(SQL_INSTANCE)
-#	$(FILES_PATH)$(UNSET_SERVICES_SCRIPT)
-#	rm -rf ~/.aws

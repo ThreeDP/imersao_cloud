@@ -1,6 +1,5 @@
 #!/bin/sh
 
-export GOOGLE_CLOUD_PROJECT_ID=$(gcloud config get-value project)
 gcloud config set project $GOOGLE_CLOUD_PROJECT_ID
 ./$1 
 gcloud services enable containerregistry.googleapis.com

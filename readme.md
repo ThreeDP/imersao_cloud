@@ -6,8 +6,24 @@
 
 ## Fazer o build para instanciar a os serviços
 
+1. A segunda etapa é clonar o projeto no CLI do google cloud.
+
 ```sh
-make key_secret=./key.csv
+git clone git@github.com:ThreeDP/imersao_cloud.git
+```
+
+2. Importar o arquivo csv de credenciais baixado da aws.
+
+3. Execute o arquivo .environment para obter as informações basicas do ambiente.
+
+```
+source .enviroment
+```
+
+4. E executar o commando make para configurar as instancias dos serviços necessários.
+
+```sh
+make
 ```
 
 ## Declarar as variaveis de ambiente necessárias
@@ -30,8 +46,10 @@ DB_PORT="3306"
 ## Crie a tabela para os dados
 
 ```sh
-mysql --host="<ip_publico_mysql>" --port="3306" -u <sql_user> -p
-# Digite a senha
+gcloud sql connect $SQL_INSTANCE --user=<user>
+```
+
+```sh
 use dbcovidtesting;
 source ~/imersao_cloud/requirements/db/create_table.sql
 show tables;
@@ -39,19 +57,8 @@ exit;
 ```
 
 ## Crie a imagem do app
+> Criar a imagem do app no kubernetes, conecta com a api, criar um arquivo de configuração de env e aplica as configurações no kubernetes.
 
 ```sh
-export GOOGLE_CLOUD_PROJECT_ID=$(gcloud config get-value project)
-export CONTAINER_LUXXY_COVID_NAME=gcr.io/$GOOGLE_CLOUD_PROJECT_ID/luxxy-covid-testing-system-app-pt
-cd ~/imersao_cloud/requirements/app
-gcloud builds submit --tag $CONTAINER_LUXXY_COVID_NAME
-```
-
-## Execute o kubernets
-
-```sh
-cd ~/imersao_cloud/
-kubectl create configmap luxxy-covid-config --from-env-file=.env
-cd ~/imersao_cloud/requirements/kubernets
-kubectl apply -f luxxy-covid-testing-system.yaml
+make deploy
 ```

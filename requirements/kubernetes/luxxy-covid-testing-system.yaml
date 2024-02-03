@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: luxxy-covid-testing-system
-        image: ${CONTAINER_LUXXY_COVID_NAME}
+        image: gcr.io/imersao-cloud-413121/luxxy-covid-testing-system-app-pt
         ports:
         - containerPort: 8000
         resources:
