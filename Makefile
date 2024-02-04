@@ -31,7 +31,12 @@ deploy:
 	kubectl create configmap $(KUBERNETES_ENV_FILE) --from-env-file=.env
 	cd $(KUBERNETES_PATH) && kubectl apply -f $(KUBERNETES_FILE)
 
-clean:
+migrate:
+	wget https://drive.google.com/file/d/11RSmD0dXyavX_hixNI7VoCws3-ql-tEG/view?usp=drive_link	wget https://drive.google.com/file/d/1dI3wY4QNYPS_DMfs8peI5_sOr0W-Do6D/view?usp=drive_link
+	unzip db_dump.zip
+
+clean: fclean
+	rm -rf db_dump.zip
 	rm -rf $(TERRAFORM_OUT_FILES)
 	rm -rf ~/.aws
 
